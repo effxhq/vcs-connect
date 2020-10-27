@@ -1,0 +1,31 @@
+---
+version: effx/v1
+kind: service
+spec:
+  name: graphql-service
+  description: Handles GraphQL requests
+  contact:
+    email: text@example.com
+
+    onCall:
+      label: pagerduty # can be inferred = (domain - tld - subdomains)
+      url: "https://chan.pagerduty.com/..."
+
+    chat:
+      label: #backend
+      url: "https://chan.slack.com/..."
+
+    issueTracker:
+      label: "JIRA"
+      url: ""
+
+  linkGroups:
+    - label: Operations
+      links:
+        - label: Runbook
+          url: https://effx.com/
+        - label: Dashboard
+          url: https://effx.com/
+
+  tags: {}
+  annotations: {}
