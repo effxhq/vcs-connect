@@ -101,4 +101,3 @@ func (c *Consumer) Consume(repository *model.Repository) (err error) {
 
 	return nil
 }
-
