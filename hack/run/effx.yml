@@ -1,0 +1,19 @@
+---
+version: effx/v1
+kind: team
+spec:
+  name: backend
+  description: ""
+  contact: {}
+  tags: {}
+  annotations: {}
+
+---
+version: effx/v1
+kind: team
+spec:
+  name: frontend
+  description: ""
+  contact: {}
+  tags: {}
+  annotations: {}
