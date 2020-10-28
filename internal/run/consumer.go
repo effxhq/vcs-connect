@@ -111,6 +111,7 @@ func (c *Consumer) Consume(repository *model.Repository) (err error) {
 	return nil
 }
 
+// Run consumes repositories from the data channel until the program is shutdown.
 func (c *Consumer) Run(ctx context.Context, data chan *model.Repository) error {
 	log := logger.MustGetFromContext(ctx)
 

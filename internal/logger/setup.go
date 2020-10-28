@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// MustSetup forces a setup of the logger and fails the program if an error occurs.
 func MustSetup() *zap.Logger {
 	logger, err := Setup()
 	if err != nil {
@@ -14,6 +15,7 @@ func MustSetup() *zap.Logger {
 	return logger
 }
 
+// Setup attempts to initialize a logger for this program.
 func Setup() (*zap.Logger, error) {
 	return zap.Config{
 		Development:      false,

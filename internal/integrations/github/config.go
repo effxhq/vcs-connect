@@ -6,6 +6,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// Configuration encapsulates information needed for communicating with a
+// GitHub API instance (Enterprise / Non-enterprise)
 type Configuration struct {
 	BaseURL             string
 	UploadURL           string
@@ -14,6 +16,7 @@ type Configuration struct {
 	Organizations       *cli.StringSlice
 }
 
+// Validate ensures the configuration provided contains the required information.
 func (c *Configuration) Validate() error {
 	if c.UserName == "" {
 		return fmt.Errorf("a username must be provided")
@@ -23,6 +26,7 @@ func (c *Configuration) Validate() error {
 	return nil
 }
 
+// DefaultConfigWithFlags returns configuration and flags specific to GitHub
 func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 	cfg := &Configuration{
 		Organizations: cli.NewStringSlice(),

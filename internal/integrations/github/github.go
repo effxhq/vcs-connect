@@ -15,6 +15,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// NewIntegration returns the Integration responsible for communicating with GitHub.
+// Before construction, the Configuration is validated to ensure it contains the
+// proper information.
 func NewIntegration(ctx context.Context, config *Configuration) (*Integration, error) {
 	if err := config.Validate(); err != nil {
 		return nil, err
@@ -44,6 +47,7 @@ func NewIntegration(ctx context.Context, config *Configuration) (*Integration, e
 	}, nil
 }
 
+// Integration encapsulates the logic for integrating data from GitHub.
 type Integration struct {
 	client *github.Client
 	config *Configuration
@@ -110,6 +114,7 @@ func (i *Integration) discoverRepositories(ctx context.Context, organization str
 	return repositories, nil
 }
 
+// Run feeds the data channel with results it discovers from GitHub
 func (i *Integration) Run(ctx context.Context, data chan *model.Repository) error {
 	log := logger.MustGetFromContext(ctx)
 

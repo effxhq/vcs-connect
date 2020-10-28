@@ -93,7 +93,7 @@ func main() {
 					ctx, cancel := context.WithCancel(clictx.Context)
 					defer cancel()
 
-					ctx = logger.AttachContext(ctx, logger.MustSetup())
+					ctx = logger.AttachToContext(ctx, logger.MustSetup())
 
 					var authMethod transport.AuthMethod
 					var integration integrations.Runner
