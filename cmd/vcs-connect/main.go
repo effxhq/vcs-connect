@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"runtime"
 
+	"github.com/effxhq/vcs-connect/internal/run"
 	"github.com/effxhq/vcs-connect/internal/v"
 
 	"github.com/urfave/cli/v2"
@@ -17,21 +19,21 @@ var commit string
 var date string
 
 type config struct {
-	placeholder string
+	ScratchDir string
 }
 
 func main() {
 	cfg := &config{
-		placeholder: "default value",
+		ScratchDir: path.Join(os.TempDir(), "effx-vcs-connect"),
 	}
 
 	flags := []cli.Flag{
 		&cli.StringFlag{
-			Name:        "placeholder",
-			Usage:       "description of the flag",
-			Destination: &(cfg.placeholder),
-			Value:       cfg.placeholder,
-			EnvVars:     []string{"PLACEHOLDER"},
+			Name:        "scratch-dir",
+			Usage:       "scratch space used to clone repositories for indexing",
+			Destination: &(cfg.ScratchDir),
+			Value:       cfg.ScratchDir,
+			EnvVars:     []string{"SCRATCH_DIR"},
 		},
 	}
 
@@ -44,7 +46,10 @@ func main() {
 				Usage: "Performs a one-time indexing of connected repositories",
 				Flags: flags,
 				Action: func(ctx *cli.Context) error {
-					// TODO
+					_ = &run.Consumer{
+						ScratchDir: cfg.ScratchDir,
+					}
+
 					return nil
 				},
 			},
