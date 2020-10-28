@@ -4,17 +4,18 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
-	"github.com/effxhq/vcs-connect/internal/logger"
-	"go.uber.org/zap"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 
+	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
 
 	"github.com/pkg/errors"
+
+	"go.uber.org/zap"
 
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"

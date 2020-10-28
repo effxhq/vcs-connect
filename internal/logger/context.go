@@ -2,8 +2,9 @@ package logger
 
 import (
 	"context"
-	"go.uber.org/zap"
 	"log"
+
+	"go.uber.org/zap"
 )
 
 const loggerKey = "EFFX_LOGGER"

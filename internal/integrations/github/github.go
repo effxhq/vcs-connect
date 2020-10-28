@@ -2,12 +2,15 @@ package github
 
 import (
 	"context"
+
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 
 	"github.com/google/go-github/v20/github"
+
+	"github.com/pkg/errors"
+
+	"go.uber.org/zap"
 
 	"golang.org/x/oauth2"
 )
@@ -57,7 +60,7 @@ func (i *Integration) discoverOrganizations(ctx context.Context) ([]string, erro
 
 	for page > 0 {
 		orgs, resp, err := i.client.Organizations.List(ctx, i.config.UserName, &github.ListOptions{
-			Page: 1,
+			Page:    1,
 			PerPage: 100,
 		})
 		if err != nil {
@@ -83,7 +86,7 @@ func (i *Integration) discoverRepositories(ctx context.Context, organization str
 	for page > 0 {
 		repos, resp, err := i.client.Repositories.ListByOrg(ctx, organization, &github.RepositoryListByOrgOptions{
 			ListOptions: github.ListOptions{
-				Page: page,
+				Page:    page,
 				PerPage: 100,
 			},
 		})
@@ -94,8 +97,8 @@ func (i *Integration) discoverRepositories(ctx context.Context, organization str
 		results := make([]*model.Repository, len(repos))
 		for i, repo := range repos {
 			results[i] = &model.Repository{
-				CloneURL: repo.GetCloneURL(),
-				Tags: map[string]string{},
+				CloneURL:    repo.GetCloneURL(),
+				Tags:        map[string]string{},
 				Annotations: map[string]string{},
 			}
 		}

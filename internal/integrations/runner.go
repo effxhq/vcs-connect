@@ -2,6 +2,7 @@ package integrations
 
 import (
 	"context"
+
 	"github.com/effxhq/vcs-connect/internal/model"
 )
 

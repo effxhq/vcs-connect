@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/effxhq/vcs-connect/internal/logger"
 	"log"
 	"os"
 	"os/signal"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/effxhq/vcs-connect/internal/integrations"
 	"github.com/effxhq/vcs-connect/internal/integrations/github"
+	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
 	"github.com/effxhq/vcs-connect/internal/run"
 	"github.com/effxhq/vcs-connect/internal/v"
