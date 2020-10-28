@@ -64,7 +64,7 @@ func (i *Integration) discoverOrganizations(ctx context.Context) ([]string, erro
 
 	for page > 0 {
 		orgs, resp, err := i.client.Organizations.List(ctx, i.config.UserName, &github.ListOptions{
-			Page:    1,
+			Page:    page,
 			PerPage: 100,
 		})
 		if err != nil {
