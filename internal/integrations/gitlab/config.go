@@ -30,7 +30,7 @@ func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 	flags := []cli.Flag{
 		&cli.StringFlag{
 			Name:        "gitlab-base-url",
-			Usage:       "url to the GitHub instance",
+			Usage:       "url to the GitLab instance",
 			Destination: &(cfg.BaseURL),
 			Value:       cfg.BaseURL,
 			EnvVars:     []string{"GITLAB_BASE_URL"},
