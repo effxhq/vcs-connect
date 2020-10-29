@@ -12,6 +12,7 @@ import (
 
 	"github.com/effxhq/vcs-connect/internal/integrations"
 	"github.com/effxhq/vcs-connect/internal/integrations/github"
+	"github.com/effxhq/vcs-connect/internal/integrations/gitlab"
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
 	"github.com/effxhq/vcs-connect/internal/run"
@@ -68,6 +69,7 @@ func runIntegration(parent context.Context, cfg *config, authMethod transport.Au
 
 func main() {
 	githubConfig, githubFlags := github.DefaultConfigWithFlags()
+	gitlabConfig, gitlabFlags := gitlab.DefaultConfigWithFlags()
 
 	cfg := &config{
 		EffxAPIKey: "",
@@ -101,21 +103,39 @@ func main() {
 
 	app := &cli.App{
 		Name:  "vcs-connect",
-		Usage: "Index effx.yaml files in connected repositories.",
+		Usage: "Index effx.yaml files in connected version control systems.",
 		Commands: []*cli.Command{
 			{
 				Name:  "github",
 				Usage: "Index repositories connected via GitHub",
 				Flags: append(flags, githubFlags...),
 				Action: func(ctx *cli.Context) error {
+					integration, err := github.NewIntegration(ctx.Context, githubConfig)
+					if err != nil {
+						return errors.Wrap(err, "failed to setup GitHub integration")
+					}
+
 					authMethod := &http.BasicAuth{
 						Username: githubConfig.UserName,
 						Password: githubConfig.PersonalAccessToken,
 					}
 
-					integration, err := github.NewIntegration(ctx.Context, githubConfig)
+					return runIntegration(ctx.Context, cfg, authMethod, integration)
+				},
+			},
+			{
+				Name:  "gitlab",
+				Usage: "Index repositories connected via GitLab",
+				Flags: append(flags, gitlabFlags...),
+				Action: func(ctx *cli.Context) error {
+					integration, err := gitlab.NewIntegration(ctx.Context, gitlabConfig)
 					if err != nil {
-						return errors.Wrap(err, "failed to setup GitHub integration")
+						return errors.Wrap(err, "failed to setup GitLab integration")
+					}
+
+					authMethod := &http.BasicAuth{
+						Username: gitlabConfig.UserName,
+						Password: gitlabConfig.PersonalAccessToken,
 					}
 
 					return runIntegration(ctx.Context, cfg, authMethod, integration)
