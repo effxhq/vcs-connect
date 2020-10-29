@@ -13,7 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// NewIntegration returns the Integration responsible for communicating with GitHub.
+// NewIntegration returns the Integration responsible for communicating with GitLab.
 // Before construction, the Configuration is validated to ensure it contains the
 // proper information.
 func NewIntegration(ctx context.Context, config *Configuration) (*Integration, error) {
@@ -110,19 +110,19 @@ func (i *Integration) discoverRepositories(ctx context.Context, group string) ([
 func (i *Integration) Run(ctx context.Context, data chan *model.Repository) error {
 	log := logger.MustGetFromContext(ctx)
 
-	organizations, err := i.discoverGroups(ctx)
+	groups, err := i.discoverGroups(ctx)
 	if err != nil {
-		return errors.Wrap(err, "failed to discover organizations from GitLab")
+		return errors.Wrap(err, "failed to discover groups from GitLab")
 	}
 
-	for _, organization := range organizations {
+	for _, group := range groups {
 		log.Info("discovering repositories",
-			zap.String("organization", organization))
+			zap.String("group", group))
 
-		repositories, err := i.discoverRepositories(ctx, organization)
+		repositories, err := i.discoverRepositories(ctx, group)
 		if err != nil {
 			log.Error("failed to discover repositories",
-				zap.String("organization", organization),
+				zap.String("group", group),
 				zap.Error(err))
 			continue
 		}
