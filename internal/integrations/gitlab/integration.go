@@ -13,6 +13,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// NewIntegration returns the Integration responsible for communicating with GitHub.
+// Before construction, the Configuration is validated to ensure it contains the
+// proper information.
 func NewIntegration(ctx context.Context, config *Configuration) (*Integration, error) {
 	if err := config.Validate(); err != nil {
 		return nil, err
@@ -34,6 +37,7 @@ func NewIntegration(ctx context.Context, config *Configuration) (*Integration, e
 	}, nil
 }
 
+// Integration encapsulates the logic for integrating data from GitLab.
 type Integration struct {
 	client *gitlab.Client
 	config *Configuration
@@ -102,6 +106,7 @@ func (i *Integration) discoverRepositories(ctx context.Context, group string) ([
 	return repositories, nil
 }
 
+// Run feeds the data channel with results it discovers from GitLab
 func (i *Integration) Run(ctx context.Context, data chan *model.Repository) error {
 	log := logger.MustGetFromContext(ctx)
 

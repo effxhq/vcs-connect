@@ -6,6 +6,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// Configuration encapsulates information needed for communicating with a
+// GitLab API instance
 type Configuration struct {
 	BaseURL             string
 	UserName            string
@@ -13,6 +15,7 @@ type Configuration struct {
 	Groups              *cli.StringSlice
 }
 
+// Validate ensures the configuration provided contains the required information.
 func (c *Configuration) Validate() error {
 	if c.UserName == "" {
 		return fmt.Errorf("a username must be provided")
@@ -22,6 +25,7 @@ func (c *Configuration) Validate() error {
 	return nil
 }
 
+// DefaultConfigWithFlags returns configuration and flags specific to GitLab
 func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 	cfg := &Configuration{
 		Groups: cli.NewStringSlice(),
