@@ -1,22 +1,32 @@
 package run
 
 import (
+	"context"
 	"crypto/sha256"
 	"fmt"
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strings"
 
+	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
 
 	"github.com/pkg/errors"
+
+	"go.uber.org/zap"
 
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/cache"
 	"gopkg.in/src-d/go-git.v4/plumbing/transport"
 	"gopkg.in/src-d/go-git.v4/storage/filesystem"
+)
+
+var (
+	// matches *.effx.yaml, effx.yaml, *.effx.yml, effx.yml
+	effxYAMLPattern, _ = regexp.Compile("^(.+\\.)?effx\\.ya?ml$")
 )
 
 func s256(in string) string {
@@ -61,8 +71,7 @@ func (c *Consumer) FindEffxYAML(workDir string) ([]string, error) {
 		} else if !info.IsDir() {
 			fileName := filepath.Base(path)
 
-			// matches *.effx.yaml and effx.yaml
-			if fileName == "effx.yaml" || strings.HasSuffix(path, ".effx.yaml") {
+			if effxYAMLPattern.MatchString(fileName) {
 				files = append(files, strings.TrimPrefix(path, workDir)[1:])
 			}
 		}
@@ -82,7 +91,7 @@ func (c *Consumer) Consume(repository *model.Repository) (err error) {
 	workDir := path.Join(c.ScratchDir, s256(cloneURL))
 
 	// clean up workspace
-	defer os.Remove(workDir)
+	defer os.RemoveAll(workDir)
 
 	err = c.SetupFS(workDir, cloneURL)
 	if err != nil {
@@ -100,4 +109,22 @@ func (c *Consumer) Consume(repository *model.Repository) (err error) {
 	}
 
 	return nil
+}
+
+// Run consumes repositories from the data channel until the program is shutdown.
+func (c *Consumer) Run(ctx context.Context, data chan *model.Repository) error {
+	log := logger.MustGetFromContext(ctx)
+
+	for {
+		select {
+		case <-ctx.Done():
+			return nil
+		case repository := <-data:
+			if err := c.Consume(repository); err != nil {
+				log.Error("failed to consume repository",
+					zap.String("repository", repository.CloneURL),
+					zap.Error(err))
+			}
+		}
+	}
 }

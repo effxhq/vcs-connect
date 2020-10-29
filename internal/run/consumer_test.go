@@ -35,7 +35,8 @@ func TestConsumer_FindEffxYAML(t *testing.T) {
 	files, err := c.FindEffxYAML(workDir)
 	require.NoError(t, err)
 
-	require.Len(t, files, 2)
+	require.Len(t, files, 3)
 	require.Contains(t, files, "effx.yaml")
+	require.Contains(t, files, "effx.yml")
 	require.Contains(t, files, "prefixed.effx.yaml")
 }
