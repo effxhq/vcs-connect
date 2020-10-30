@@ -80,7 +80,7 @@ func (i *Integration) discoverRepositories(ctx context.Context, group string) ([
 
 	page := 1
 	for page > 0 {
-		repos, resp, err := i.client.Projects.ListUserProjects(group, &gitlab.ListProjectsOptions{
+		repos, resp, err := i.client.Groups.ListGroupProjects(group, &gitlab.ListGroupProjectsOptions{
 			ListOptions: gitlab.ListOptions{
 				Page:    page,
 				PerPage: 100,

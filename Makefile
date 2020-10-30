@@ -31,3 +31,14 @@ docker:
 		--tag effxhq/vcs-connect:latest \
 		--tag effxhq/vcs-connect:$(VERSION) \
 		-f Dockerfile
+
+dockerx:
+	docker buildx build . \
+		--platform linux/amd64,linux/arm64,linux/arm/v7 \
+		--build-arg VERSION=$(VERSION) \
+		--build-arg GIT_SHA=$(GIT_SHA) \
+		--build-arg TIMESTAMP=$(TIMESTAMP) \
+		--tag effxhq/vcs-connect:latest \
+		--tag effxhq/vcs-connect:$(VERSION) \
+		-f Dockerfile \
+		--push
