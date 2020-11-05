@@ -4,12 +4,14 @@ import (
 	"context"
 	"crypto/sha256"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
 
+	"github.com/effxhq/vcs-connect/internal/effx"
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
 
@@ -33,8 +35,17 @@ func s256(in string) string {
 	return fmt.Sprintf("%x", sha256.Sum256([]byte(in)))
 }
 
+func cloneMap(in map[string]string) map[string]string {
+	out := make(map[string]string, len(in))
+	for k, v := range in {
+		out[k] = v
+	}
+	return out
+}
+
 // Consumer is a stateless entity that ingests repositories from integrations.
 type Consumer struct {
+	EffxClient *effx.Client
 	ScratchDir string
 	AuthMethod transport.AuthMethod
 }
@@ -86,7 +97,7 @@ func (c *Consumer) FindEffxYAML(workDir string) ([]string, error) {
 }
 
 // Consume attempts to index a repository for effx.yaml files
-func (c *Consumer) Consume(repository *model.Repository) (err error) {
+func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err error) {
 	cloneURL := repository.CloneURL
 	workDir := path.Join(c.ScratchDir, s256(cloneURL))
 
@@ -105,7 +116,39 @@ func (c *Consumer) Consume(repository *model.Repository) (err error) {
 
 	// parse and send to our API
 	for _, effxYAMLFile := range effxYAML {
-		fmt.Println(effxYAMLFile)
+		body, err := ioutil.ReadFile(effxYAMLFile)
+		if err != nil {
+			if log != nil {
+				log.Error("failed to read effx.yaml file",
+					zap.String("filPath", effxYAMLFile),
+					zap.Error(err))
+			}
+			continue
+		}
+
+		// set common annotations for this yaml
+		tags := cloneMap(repository.Tags)
+		annotations := cloneMap(repository.Annotations)
+		annotations["effx.io/source"] = "vcs-connect"
+		annotations["effx.io/repository"] = cloneURL
+		annotations["effx.io/file-path"] = effxYAMLFile
+
+		err = c.EffxClient.Sync(&effx.SyncRequest{
+			FileContents: string(body),
+			Tags:         tags,
+			Annotations:  annotations,
+		})
+		if err != nil {
+			if log != nil {
+				log.Error("failed to synx effx.yaml file",
+					zap.String("filPath", effxYAMLFile),
+					zap.Error(err))
+			}
+			continue
+		}
+
+		log.Info("successfully updated effx.yaml file",
+			zap.String("filePath", effxYAMLFile))
 	}
 
 	return nil
@@ -120,7 +163,7 @@ func (c *Consumer) Run(ctx context.Context, data chan *model.Repository) error {
 		case <-ctx.Done():
 			return nil
 		case repository := <-data:
-			if err := c.Consume(repository); err != nil {
+			if err := c.Consume(log, repository); err != nil {
 				log.Error("failed to consume repository",
 					zap.String("repository", repository.CloneURL),
 					zap.Error(err))

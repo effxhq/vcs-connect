@@ -12,6 +12,7 @@ deps:
 	go mod verify
 
 fmt:
+	goimports -w .
 	go-groups -w .
 	gofmt -s -w .
 
