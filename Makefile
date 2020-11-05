@@ -5,6 +5,7 @@ LD_FLAGS := -X main.version=${VERSION} -X main.commit=${GIT_SHA} -X main.date=${
 
 build-deps:
 	GO111MODULE=off go get -u golang.org/x/lint/golint
+	GO111MODULE=off go get -u golang.org/x/tools/cmd/goimports
 	GO111MODULE=off go get -u oss.indeed.com/go/go-groups
 
 deps:
