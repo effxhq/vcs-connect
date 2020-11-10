@@ -16,7 +16,7 @@ type Configuration struct {
 
 // Validate ensures the configuration provided contains the required information.
 func (c *Configuration) Validate() error {
-	if c.ScratchDir != "" {
+	if c.ScratchDir == "" {
 		return fmt.Errorf("a scratch dir must be provided")
 	} else if c.Workers <= 0 {
 		return fmt.Errorf("at least one worker must be configured")

@@ -116,7 +116,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 	// parse and send to our API
 	for _, effxYAMLFile := range effxYAML {
-		body, err := ioutil.ReadFile(effxYAMLFile)
+		body, err := ioutil.ReadFile(path.Join(workDir, effxYAMLFile))
 		if err != nil {
 			if log != nil {
 				log.Error("failed to read effx.yaml file",
