@@ -1,20 +1,15 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
-	"path"
 	"runtime"
-	"syscall"
 
-	"github.com/effxhq/vcs-connect/internal/integrations"
+	"github.com/effxhq/vcs-connect/internal/controller"
+	"github.com/effxhq/vcs-connect/internal/effx"
 	"github.com/effxhq/vcs-connect/internal/integrations/github"
 	"github.com/effxhq/vcs-connect/internal/integrations/gitlab"
-	"github.com/effxhq/vcs-connect/internal/logger"
-	"github.com/effxhq/vcs-connect/internal/model"
 	"github.com/effxhq/vcs-connect/internal/run"
 	"github.com/effxhq/vcs-connect/internal/v"
 
@@ -31,75 +26,27 @@ var version string
 var commit string
 var date string
 
-type config struct {
-	EffxAPIKey string
-	ScratchDir string
-	Workers    int
+func initAuthForGitHub(cfg *github.Configuration) transport.AuthMethod {
+	return &http.BasicAuth{
+		Username: cfg.UserName,
+		Password: cfg.PersonalAccessToken,
+	}
 }
 
-func runIntegration(parent context.Context, cfg *config, authMethod transport.AuthMethod, integration integrations.Runner) error {
-	ctx, cancel := context.WithCancel(parent)
-	defer cancel()
-	defer os.RemoveAll(cfg.ScratchDir)
-
-	ctx = logger.AttachToContext(ctx, logger.MustSetup())
-
-	consumer := &run.Consumer{
-		ScratchDir: cfg.ScratchDir,
-		AuthMethod: authMethod,
+func initAuthForGitLab(cfg *gitlab.Configuration) transport.AuthMethod {
+	return &http.BasicAuth{
+		Username: cfg.UserName,
+		Password: cfg.PersonalAccessToken,
 	}
-
-	data := make(chan *model.Repository)
-
-	signals := make(chan os.Signal)
-	signal.Notify(signals, syscall.SIGTERM, syscall.SIGINT)
-	go func() {
-		defer signal.Stop(signals)
-		<-signals
-		cancel()
-	}()
-
-	for i := 0; i < cfg.Workers; i++ {
-		go consumer.Run(ctx, data)
-	}
-
-	// Run the integration until completion
-	return integration.Run(ctx, data)
 }
 
 func main() {
+	clientConfig, clientFlags := effx.DefaultConfigWithFlags()
 	githubConfig, githubFlags := github.DefaultConfigWithFlags()
 	gitlabConfig, gitlabFlags := gitlab.DefaultConfigWithFlags()
+	controllerConfig, controllerFlags := controller.DefaultConfigWithFlags()
 
-	cfg := &config{
-		EffxAPIKey: "",
-		ScratchDir: path.Join(os.TempDir(), "effx-vcs-connect"),
-		Workers:    1,
-	}
-
-	flags := []cli.Flag{
-		&cli.StringFlag{
-			Name:        "effx-api-key",
-			Usage:       "api key used to authenticate with the effx API",
-			Destination: &(cfg.EffxAPIKey),
-			Value:       cfg.EffxAPIKey,
-			EnvVars:     []string{"EFFX_API_KEY"},
-		},
-		&cli.StringFlag{
-			Name:        "scratch-dir",
-			Usage:       "scratch space used to clone repositories for indexing",
-			Destination: &(cfg.ScratchDir),
-			Value:       cfg.ScratchDir,
-			EnvVars:     []string{"SCRATCH_DIR"},
-		},
-		&cli.IntFlag{
-			Name:        "workers",
-			Usage:       "the number of concurrent repositories cloned at once",
-			Destination: &(cfg.Workers),
-			Value:       cfg.Workers,
-			EnvVars:     []string{"WORKERS"},
-		},
-	}
+	flags := append(controllerFlags, clientFlags...)
 
 	app := &cli.App{
 		Name:  "vcs-connect",
@@ -110,17 +57,28 @@ func main() {
 				Usage: "Index repositories connected via GitHub",
 				Flags: append(flags, githubFlags...),
 				Action: func(ctx *cli.Context) error {
+					effxClient, err := effx.New(clientConfig)
+					if err != nil {
+						return errors.Wrapf(err, "failed to setup effx client")
+					}
+
 					integration, err := github.NewIntegration(ctx.Context, githubConfig)
 					if err != nil {
 						return errors.Wrap(err, "failed to setup GitHub integration")
 					}
 
-					authMethod := &http.BasicAuth{
-						Username: githubConfig.UserName,
-						Password: githubConfig.PersonalAccessToken,
+					consumer := &run.Consumer{
+						EffxClient: effxClient,
+						ScratchDir: controllerConfig.ScratchDir,
+						AuthMethod: initAuthForGitHub(githubConfig),
 					}
 
-					return runIntegration(ctx.Context, cfg, authMethod, integration)
+					control, err := controller.New(controllerConfig, integration, consumer)
+					if err != nil {
+						return errors.Wrapf(err, "failed to setup controller")
+					}
+
+					return control.Run(ctx.Context)
 				},
 			},
 			{
@@ -128,17 +86,28 @@ func main() {
 				Usage: "Index repositories connected via GitLab",
 				Flags: append(flags, gitlabFlags...),
 				Action: func(ctx *cli.Context) error {
+					effxClient, err := effx.New(clientConfig)
+					if err != nil {
+						return errors.Wrapf(err, "failed to setup effx client")
+					}
+
 					integration, err := gitlab.NewIntegration(ctx.Context, gitlabConfig)
 					if err != nil {
 						return errors.Wrap(err, "failed to setup GitLab integration")
 					}
 
-					authMethod := &http.BasicAuth{
-						Username: gitlabConfig.UserName,
-						Password: gitlabConfig.PersonalAccessToken,
+					consumer := &run.Consumer{
+						EffxClient: effxClient,
+						ScratchDir: controllerConfig.ScratchDir,
+						AuthMethod: initAuthForGitHub(githubConfig),
 					}
 
-					return runIntegration(ctx.Context, cfg, authMethod, integration)
+					control, err := controller.New(controllerConfig, integration, consumer)
+					if err != nil {
+						return errors.Wrapf(err, "failed to setup controller")
+					}
+
+					return control.Run(ctx.Context)
 				},
 			},
 			{
