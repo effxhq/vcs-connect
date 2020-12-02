@@ -59,6 +59,7 @@ data:
   GITHUB_USERNAME: $(echo -n "${GITHUB_USERNAME}" | base64 | tr -d $'\n')
   GITHUB_ACCESS_TOKEN: $(echo -n "${GITHUB_ACCESS_TOKEN}" | base64 | tr -d $'\n')
   GITHUB_ORGANIZATIONS: $(echo -n "${GITHUB_ORGANIZATIONS}" | base64 | tr -d $'\n')
+  EFFX_API_KEY: $(echo -n "${EFFX_API_KEY}" | base64 | tr -d $'\n')
 EOF
 ```
 

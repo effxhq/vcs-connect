@@ -60,6 +60,7 @@ data:
   GITLAB_USERNAME: $(echo -n "${GITLAB_USERNAME}" | base64 | tr -d $'\n')
   GITLAB_ACCESS_TOKEN: $(echo -n "${GITLAB_ACCESS_TOKEN}" | base64 | tr -d $'\n')
   GITLAB_GROUPS: $(echo -n "${GITLAB_GROUPS}" | base64 | tr -d $'\n')
+  EFFX_API_KEY: $(echo -n "${EFFX_API_KEY}" | base64 | tr -d $'\n')
 EOF
 ```
 
