@@ -41,7 +41,7 @@ docker run --rm -it \
 First, you'll need to add the effx helm repository.
 
 ```bash
-helm repo add effx https://charts.effx.run
+helm repo add effxhq https://charts.effx.run
 helm repo update
 ```
 
@@ -67,7 +67,7 @@ Once the namespace and credentials have been setup, we can deploy vcs-connect.
 Be sure to point your `externalConfig` at the proper secret.
 
 ```
-helm upgrade -i github effx/vcs-connect \
+helm upgrade -i github effxhq/vcs-connect \
   -n effx \
   --set provider=github \
   --set externalConfig.secretRef.name=github-vcs-connect
