@@ -4,8 +4,7 @@ effx is a service intelligence platform that helps organizations tame their serv
 vcs-connect ingests `effx.yaml` files from your version control systems using a regularly scheduled cronjob.
 This is ideal for organizations who have many repositories or prefer indexing is done on the side.
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/effxhq)](https://artifacthub.io/packages/search?repo=effxhq)
-![license](https://img.shields.io/github/license/depscloud/deploy.svg)
+![license](https://img.shields.io/github/license/effxhq/vcs-connect.svg)
 
 ## Getting Started
 
