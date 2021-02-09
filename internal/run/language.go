@@ -34,6 +34,11 @@ func (c *Consumer) InferLanguage(workDir string) (string, error) {
 		} else if !info.IsDir() {
 			fileName := filepath.Base(path)
 
+			// we don't want to look at effx files
+			if effxYAMLPattern.MatchString(fileName) {
+				return nil
+			}
+
 			content, err := ioutil.ReadFile(fileName)
 			if err != nil {
 				return err
