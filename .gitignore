@@ -19,3 +19,6 @@ coverage.txt
 
 # binary
 /vcs-connect
+
+# VS code person config file
+.vscode
