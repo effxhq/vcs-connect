@@ -117,7 +117,9 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 	// parse and send to our API
 	for _, effxYAMLFile := range effxYAML {
 
-		effxDir := effxYAMLFile[:strings.LastIndex(effxYAMLFile, "/")]
+		// gets the dir where the effx file is at
+		// for example /src/stuff/effx.yaml -> /src/stuff
+		effxDir := effxYAMLFile[:strings.LastIndex(effxYAMLFile, "/")+1]
 		lang, err := c.InferLanguage(effxDir)
 		if err != nil {
 			log.Error("failed to infer langugage",
