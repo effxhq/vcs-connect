@@ -46,8 +46,8 @@ func TestConsumer_InferLangugage(t *testing.T) {
 
 	workDir := path.Join("./")
 
-	langs, err := c.InferLanguage(workDir)
+	lang, err := c.InferLanguage(workDir)
 	require.NoError(t, err)
 
-	require.Contains(t, langs, "golang")
+	require.Contains(t, lang, "go")
 }

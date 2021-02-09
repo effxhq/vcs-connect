@@ -116,6 +116,15 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 	// parse and send to our API
 	for _, effxYAMLFile := range effxYAML {
+
+		effxDir := effxYAMLFile[:strings.LastIndex(effxYAMLFile, "/")]
+		lang, err := c.InferLanguage(effxDir)
+		if err != nil {
+			log.Error("failed to infer langugage",
+				zap.String("filPath", effxYAMLFile),
+				zap.Error(err))
+		}
+
 		body, err := ioutil.ReadFile(path.Join(workDir, effxYAMLFile))
 		if err != nil {
 			if log != nil {
@@ -132,6 +141,10 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations["effx.io/source"] = "vcs-connect"
 		annotations["effx.io/repository"] = cloneURL
 		annotations["effx.io/file-path"] = effxYAMLFile
+
+		if lang != "" {
+			tags["language"] = lang
+		}
 
 		err = c.EffxClient.Sync(&effx.SyncRequest{
 			FileContents: string(body),
