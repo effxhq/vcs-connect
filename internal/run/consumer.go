@@ -118,7 +118,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 	for _, effxYAMLFile := range effxYAML {
 
 		// gets the dir where the effx file is at
-		// for example /src/stuff/effx.yaml -> /src/stuff
+		// for example /src/stuff/effx.yaml -> /src/stuff/
 		effxDir := path.Join(effxYAMLFile, "./")
 		lang, err := c.InferLanguage(effxDir)
 		if err != nil {
