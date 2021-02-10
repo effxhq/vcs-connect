@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/go-enry/go-enry/v2"
+
 	"github.com/pkg/errors"
 )
 
