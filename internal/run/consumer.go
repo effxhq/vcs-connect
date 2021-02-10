@@ -145,7 +145,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations["effx.io/file-path"] = effxYAMLFile
 
 		if lang != "" {
-			tags["language"] = lang
+			tags["lang"] = lang
 		}
 
 		err = c.EffxClient.Sync(&effx.SyncRequest{
