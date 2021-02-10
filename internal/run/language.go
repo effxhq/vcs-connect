@@ -39,7 +39,7 @@ func (c *Consumer) InferLanguage(workDir string) (string, error) {
 				return nil
 			}
 
-			content, err := ioutil.ReadFile(fileName)
+			content, err := ioutil.ReadFile(path)
 			if err != nil {
 				return err
 			}

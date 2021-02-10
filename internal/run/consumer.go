@@ -119,7 +119,8 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 		// gets the dir where the effx file is at
 		// for example /src/stuff/effx.yaml -> /src/stuff/
-		effxDir := filepath.Dir(effxYAMLFile) + "/"
+		effxDir := workDir + "/" + filepath.Dir(effxYAMLFile)
+
 		lang, err := c.InferLanguage(effxDir)
 		if err != nil {
 			log.Error("failed to infer langugage",
