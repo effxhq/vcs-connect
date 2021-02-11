@@ -146,7 +146,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations["effx.io/file-path"] = effxYAMLFile
 
 		if lang != "" {
-			annotations["effx.io/cli-inferred-tags"] = "language"
+			annotations["effx.io/vcs-connect-inferred-tags"] = "language"
 			tags["language"] = lang
 		}
 
