@@ -146,7 +146,8 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations["effx.io/file-path"] = effxYAMLFile
 
 		if lang != "" {
-			tags["lang"] = lang
+			annotations["effx.io/cli-inferred-tags"] = "language"
+			tags["language"] = lang
 		}
 
 		err = c.EffxClient.Sync(&effx.SyncRequest{
@@ -154,6 +155,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 			Tags:         tags,
 			Annotations:  annotations,
 		})
+
 		if err != nil {
 			if log != nil {
 				log.Error("failed to synx effx.yaml file",
