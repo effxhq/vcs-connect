@@ -155,8 +155,6 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 				langVersionTag := strings.ToLower(result.Language)
 				tags[langVersionTag] = strings.ToLower(result.Version)
 				inferredTags = append(inferredTags, langVersionTag)
-
-				fmt.Println("daniel", result.Language, " ", result.Version)
 			}
 		}
 
