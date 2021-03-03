@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 
@@ -80,14 +79,5 @@ func (c *Client) Sync(syncRequest *SyncRequest) error {
 
 // DetectServices attempts to detect services based on repo work dir.
 func (c *Client) DetectServices(workDir string) error {
-	fmt.Println("daniel directory", workDir)
-	files, err := ioutil.ReadDir(workDir)
-	if err != nil {
-		// log.Fatal(err)
-	}
-
-	for _, f := range files {
-		fmt.Println(f.Name())
-	}
 	return discover.DetectServicesFromWorkDir(workDir, c.cfg.APIKey, "vcs-connect")
 }
