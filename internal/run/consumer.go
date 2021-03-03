@@ -24,6 +24,7 @@ import (
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/cache"
 	"gopkg.in/src-d/go-git.v4/plumbing/transport"
+	"gopkg.in/src-d/go-git.v4/storage/filesystem"
 )
 
 var (
@@ -58,7 +59,7 @@ func (c *Consumer) SetupFS(workDir, cloneURL string) error {
 		return errors.Wrapf(err, "failed to setup .git directory")
 	}
 
-	storage := filesysteresult.NewStorage(gitfs, cache.NewObjectLRUDefault())
+	storage := filesystem.NewStorage(gitfs, cache.NewObjectLRUDefault())
 	options := &git.CloneOptions{
 		URL:   cloneURL,
 		Depth: 1,
@@ -154,6 +155,8 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 				langVersionTag := strings.ToLower(result.Language)
 				tags[langVersionTag] = strings.ToLower(result.Version)
 				inferredTags = append(inferredTags, langVersionTag)
+
+				fmt.Println("daniel", result.Language, " ", result.Version)
 			}
 		}
 
@@ -170,9 +173,9 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 		if err != nil {
 			if log != nil {
-				log.Error("failed to synx effx.yaml file",
-					zap.String("filPath", effxYAMLFile),
-					zap.Error(err))
+				// log.Error("failed to synx effx.yaml file",
+				// 	zap.String("filPath", effxYAMLFile),
+				// 	zap.Error(err))
 			}
 			continue
 		}

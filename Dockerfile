@@ -6,6 +6,11 @@ WORKDIR /go/src/vcs-connect
 
 RUN apk -U upgrade && apk add build-base git curl
 
+ARG GITHUB_TOKEN
+ARG GITHUB_USER
+
+RUN git config --global url."https://$GITHUB_USER:$GITHUB_TOKEN@github.com/".insteadOf "https://github.com/"
+
 COPY go.mod .
 COPY go.sum .
 COPY Makefile .
