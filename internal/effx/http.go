@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/effxhq/effx-cli/discover"
 )
 
 // New returns an effx Client encapsulating operations with the API
@@ -73,4 +75,9 @@ func (c *Client) Sync(syncRequest *SyncRequest) error {
 	}
 
 	return nil
+}
+
+// DetectServices attempts to detect services based on repo work dir.
+func (c *Client) DetectServices(workDir string) error {
+	return discover.DetectServicesFromWorkDir(workDir, c.cfg.APIKey, "vcs-connect")
 }
