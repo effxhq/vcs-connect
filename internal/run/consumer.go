@@ -173,9 +173,9 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 		if err != nil {
 			if log != nil {
-				// log.Error("failed to synx effx.yaml file",
-				// 	zap.String("filPath", effxYAMLFile),
-				// 	zap.Error(err))
+				log.Error("failed to synx effx.yaml file",
+					zap.String("filPath", effxYAMLFile),
+					zap.Error(err))
 			}
 			continue
 		}
