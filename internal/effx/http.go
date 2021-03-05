@@ -37,7 +37,7 @@ type Client struct {
 	cfg *Configuration
 }
 
-// Returns if a given feature is disabled.
+// IsFeatureDisabled returns if a given feature is disabled.
 // example: LANGUAGE_DETECTION
 func (c *Client) IsFeatureDisabled(feature string) bool {
 	return funk.ContainsString(c.cfg.Disable.Value(), feature)
