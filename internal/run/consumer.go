@@ -144,7 +144,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations := cloneMap(repository.Annotations)
 		inferredTags := []string{}
 
-		if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+		if !c.EffxClient.IsFeatureDisabled("LANGUAGE_DETECTION") {
 			if result != nil {
 				if result.Language != "" {
 					languageTag := "language"

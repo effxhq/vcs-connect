@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"github.com/effxhq/effx-cli/discover"
+	"github.com/thoas/go-funk"
 )
 
 // New returns an effx Client encapsulating operations with the API
@@ -34,6 +36,11 @@ type SyncRequest struct {
 // Client encapsulates communication with the API.
 type Client struct {
 	cfg *Configuration
+}
+
+func (c *Client) IsFeatureDisabled(feature string) bool {
+	list := strings.Split(c.cfg.Disable, ",")
+	return funk.ContainsString(list, feature)
 }
 
 // Sync attempts to synchronize provided contents with the upstream api.

@@ -10,9 +10,8 @@ import (
 
 // Configuration encapsulates information used by the control loop.
 type Configuration struct {
-	ScratchDir               string
-	Workers                  int
-	DisableLanguageDetection bool
+	ScratchDir string
+	Workers    int
 }
 
 // Validate ensures the configuration provided contains the required information.
@@ -28,9 +27,8 @@ func (c *Configuration) Validate() error {
 // DefaultConfigWithFlags returns configuration and flags specific to the control loop.
 func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 	cfg := &Configuration{
-		ScratchDir:               path.Join(os.TempDir(), "effx-vcs-connect"),
-		Workers:                  1,
-		DisableLanguageDetection: false,
+		ScratchDir: path.Join(os.TempDir(), "effx-vcs-connect"),
+		Workers:    1,
 	}
 
 	flags := []cli.Flag{
@@ -47,13 +45,6 @@ func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 			Destination: &(cfg.Workers),
 			Value:       cfg.Workers,
 			EnvVars:     []string{"WORKERS"},
-		},
-		&cli.BoolFlag{
-			Name:        "disable language and version detection",
-			Usage:       "optionally disables inferring language and detection information from repositories",
-			Destination: &(cfg.DisableLanguageDetection),
-			Value:       false,
-			EnvVars:     []string{"DISABLE_LANGUAGE_DETECTION"},
 		},
 	}
 

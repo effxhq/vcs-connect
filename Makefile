@@ -40,8 +40,6 @@ dockerx:
 		--build-arg VERSION=$(VERSION) \
 		--build-arg GIT_SHA=$(GIT_SHA) \
 		--build-arg TIMESTAMP=$(TIMESTAMP) \
-		--build-arg GITHUB_TOKEN=${GITHUB_PERSONAL_TOKEN} \
-		--build-arg GITHUB_USER=${GITHUB_USER} \
 		--tag effxhq/vcs-connect:latest \
 		--tag effxhq/vcs-connect:$(VERSION) \
 		-f Dockerfile \
