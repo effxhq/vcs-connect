@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 
 	"github.com/effxhq/effx-cli/discover"
 	"github.com/thoas/go-funk"
@@ -41,8 +40,7 @@ type Client struct {
 // Returns if a given feature is disabled.
 // example: LANGUAGE_DETECTION
 func (c *Client) IsFeatureDisabled(feature string) bool {
-	list := strings.Split(c.cfg.Disable, ",")
-	return funk.ContainsString(list, feature)
+	return funk.ContainsString(c.cfg.Disable.Value(), feature)
 }
 
 // Sync attempts to synchronize provided contents with the upstream api.

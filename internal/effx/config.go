@@ -10,7 +10,7 @@ import (
 type Configuration struct {
 	APIHost string
 	APIKey  string
-	Disable string
+	Disable cli.StringSlice
 }
 
 // Validate ensures the configuration provided contains the required information.
@@ -44,11 +44,11 @@ func DefaultConfigWithFlags() (*Configuration, []cli.Flag) {
 			Value:       cfg.APIKey,
 			EnvVars:     []string{"EFFX_API_KEY"},
 		},
-		&cli.StringFlag{
+		&cli.StringSliceFlag{
 			Name:        "disable",
 			Usage:       "a comma seperated list of features to disable, for example language detection",
-			Destination: &(cfg.Disable),
-			Value:       "",
+			Destination: &cfg.Disable,
+			Value:       &cli.StringSlice{},
 			EnvVars:     []string{"DISABLE"},
 		},
 	}
