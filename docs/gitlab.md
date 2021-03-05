@@ -36,6 +36,12 @@ docker run --rm -it \
   gitlab
 ```
 
+Optionally you may also pass in a list of features you want to disable, such as
+Language Detection.
+
+```bash
+-e DISABLE="LANGUAGE_DETECTION"
+
 ## Deploying to Kubernetes with Helm
 
 First, you'll need to add the effx helm repository.
