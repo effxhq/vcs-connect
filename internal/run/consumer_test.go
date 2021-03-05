@@ -40,14 +40,3 @@ func TestConsumer_FindEffxYAML(t *testing.T) {
 	require.Contains(t, files, "effx.yml")
 	require.Contains(t, files, "prefixed.effx.yaml")
 }
-
-func TestConsumer_InferLangugage(t *testing.T) {
-	c := &run.Consumer{}
-
-	workDir := path.Join("./")
-
-	lang, err := c.InferLanguage(workDir)
-	require.NoError(t, err)
-
-	require.Contains(t, lang, "go")
-}
