@@ -144,17 +144,19 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations := cloneMap(repository.Annotations)
 		inferredTags := []string{}
 
-		if result != nil {
-			if result.Language != "" {
-				languageTag := "language"
-				tags[languageTag] = result.Language
-				inferredTags = append(inferredTags, languageTag)
-			}
+		if os.Getenv("DISABLE_LANGUAGE_DETECTION") != "true" {
+			if result != nil {
+				if result.Language != "" {
+					languageTag := "language"
+					tags[languageTag] = result.Language
+					inferredTags = append(inferredTags, languageTag)
+				}
 
-			if result.Language != "" && result.Version != "" {
-				langVersionTag := strings.ToLower(result.Language)
-				tags[langVersionTag] = strings.ToLower(result.Version)
-				inferredTags = append(inferredTags, langVersionTag)
+				if result.Language != "" && result.Version != "" {
+					langVersionTag := strings.ToLower(result.Language)
+					tags[langVersionTag] = strings.ToLower(result.Version)
+					inferredTags = append(inferredTags, langVersionTag)
+				}
 			}
 		}
 
