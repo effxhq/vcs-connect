@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/effxhq/effx-cli/metadata"
 	"github.com/effxhq/vcs-connect/internal/effx"
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
@@ -121,7 +122,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		// for example /src/stuff/effx.yaml -> /src/stuff/
 		effxDir := workDir + "/" + filepath.Dir(effxYAMLFile)
 
-		lang, err := c.InferLanguage(effxDir)
+		result, err := metadata.InferMetadata(effxDir)
 		if err != nil {
 			log.Error("failed to infer langugage",
 				zap.String("filPath", effxYAMLFile),
@@ -141,19 +142,35 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		// set common annotations for this yaml
 		tags := cloneMap(repository.Tags)
 		annotations := cloneMap(repository.Annotations)
+		inferredTags := []string{}
+
+		if !c.EffxClient.IsFeatureDisabled(LanguageDetectionFeature) {
+			if result != nil {
+				if result.Language != "" {
+					languageTag := "language"
+					tags[languageTag] = result.Language
+					inferredTags = append(inferredTags, languageTag)
+				}
+
+				if result.Language != "" && result.Version != "" {
+					langVersionTag := strings.ToLower(result.Language)
+					tags[langVersionTag] = strings.ToLower(result.Version)
+					inferredTags = append(inferredTags, langVersionTag)
+				}
+			}
+		}
+
 		annotations["effx.io/source"] = "vcs-connect"
 		annotations["effx.io/repository"] = cloneURL
 		annotations["effx.io/file-path"] = effxYAMLFile
-
-		if lang != "" {
-			tags["lang"] = lang
-		}
+		annotations["effx.io/inferred-tags"] = strings.Join(inferredTags, ",")
 
 		err = c.EffxClient.Sync(&effx.SyncRequest{
 			FileContents: string(body),
 			Tags:         tags,
 			Annotations:  annotations,
 		})
+
 		if err != nil {
 			if log != nil {
 				log.Error("failed to synx effx.yaml file",
@@ -165,6 +182,11 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 
 		log.Info("successfully updated effx.yaml file",
 			zap.String("filePath", effxYAMLFile))
+	}
+
+	err = c.EffxClient.DetectServices(workDir)
+	if err != nil {
+		log.Error("failed to detect services", zap.Error(err))
 	}
 
 	return nil

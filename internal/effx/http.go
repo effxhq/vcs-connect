@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/effxhq/effx-cli/discover"
+
+	"github.com/thoas/go-funk"
 )
 
 // New returns an effx Client encapsulating operations with the API
@@ -32,6 +36,12 @@ type SyncRequest struct {
 // Client encapsulates communication with the API.
 type Client struct {
 	cfg *Configuration
+}
+
+// IsFeatureDisabled returns if a given feature is disabled.
+// example: LANGUAGE_DETECTION
+func (c *Client) IsFeatureDisabled(feature string) bool {
+	return funk.ContainsString(c.cfg.Disable.Value(), feature)
 }
 
 // Sync attempts to synchronize provided contents with the upstream api.
@@ -73,4 +83,9 @@ func (c *Client) Sync(syncRequest *SyncRequest) error {
 	}
 
 	return nil
+}
+
+// DetectServices attempts to detect services based on repo work dir.
+func (c *Client) DetectServices(workDir string) error {
+	return discover.DetectServicesFromWorkDir(workDir, c.cfg.APIKey, "vcs-connect")
 }
