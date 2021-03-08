@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/effxhq/effx-cli/metadata"
 	"github.com/effxhq/vcs-connect/internal/effx"
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
@@ -19,7 +20,6 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/effxhq/effx-cli/metadata"
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/cache"

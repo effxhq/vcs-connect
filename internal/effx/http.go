@@ -8,6 +8,7 @@ import (
 	"net/url"
 
 	"github.com/effxhq/effx-cli/discover"
+
 	"github.com/thoas/go-funk"
 )
 
