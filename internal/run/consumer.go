@@ -11,7 +11,6 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/effxhq/effx-cli/metadata"
 	"github.com/effxhq/vcs-connect/internal/effx"
 	"github.com/effxhq/vcs-connect/internal/logger"
 	"github.com/effxhq/vcs-connect/internal/model"
@@ -20,6 +19,7 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/effxhq/effx-cli/metadata"
 	"gopkg.in/src-d/go-billy.v4/osfs"
 	"gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing/cache"
@@ -144,7 +144,7 @@ func (c *Consumer) Consume(log *zap.Logger, repository *model.Repository) (err e
 		annotations := cloneMap(repository.Annotations)
 		inferredTags := []string{}
 
-		if !c.EffxClient.IsFeatureDisabled("LANGUAGE_DETECTION") {
+		if !c.EffxClient.IsFeatureDisabled(LanguageDetectionFeature) {
 			if result != nil {
 				if result.Language != "" {
 					languageTag := "language"
