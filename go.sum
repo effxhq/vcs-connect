@@ -62,6 +62,10 @@ github.com/effxhq/effx-api-v2-go/client v0.0.0-20210305212146-d0d7627a597f h1:Ci
 github.com/effxhq/effx-api-v2-go/client v0.0.0-20210305212146-d0d7627a597f/go.mod h1:0rQRYAp/KqSQ9CdqMIZPhIw50rnABeacKMPfrWCdTbg=
 github.com/effxhq/effx-cli v1.2.1-0.20210305220853-6d39e9fa0629 h1:J/voaAA//rzZAjJU3WeiYHBy6968WSBdtN4Ns2LGgNE=
 github.com/effxhq/effx-cli v1.2.1-0.20210305220853-6d39e9fa0629/go.mod h1:WZ9QrFedE1GRHK9GioAdDWcfRyJ02sZs4dktkLFGpNQ=
+github.com/effxhq/effx-cli v1.2.1-0.20210315212224-bd60a1901c2a h1:40VBa3M4iKuONNLi8mTgQWAxVyi5okBJuanFrfUrcZ0=
+github.com/effxhq/effx-cli v1.2.1-0.20210315212224-bd60a1901c2a/go.mod h1:nC+p8yIHS+Gv3FSAWuIB1KgB0zc9EgzPDY9QJod5zOM=
+github.com/effxhq/effx-cli v1.2.1-0.20210315222440-7f7690aa7487 h1:g7dPoIN5thAc7/A40+RgA4JlABXfGtOnycOry+LFDgk=
+github.com/effxhq/effx-cli v1.2.1-0.20210315222440-7f7690aa7487/go.mod h1:nC+p8yIHS+Gv3FSAWuIB1KgB0zc9EgzPDY9QJod5zOM=
 github.com/emirpasic/gods v1.12.0 h1:QAUIPSaCu4G+POclxeqb3F+WPpdKqFGlw36+yOzGlrg=
 github.com/emirpasic/gods v1.12.0/go.mod h1:YfzfFFoVP/catgzJb4IKIqXjX78Ha8FMSDh3ymbK86o=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
