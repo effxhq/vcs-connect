@@ -3,7 +3,7 @@ module github.com/effxhq/vcs-connect
 go 1.15
 
 require (
-	github.com/effxhq/effx-cli v1.2.1-0.20210305220853-6d39e9fa0629
+	github.com/effxhq/effx-cli v1.2.1-0.20210315222440-7f7690aa7487
 	github.com/google/go-github/v20 v20.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.6.1
